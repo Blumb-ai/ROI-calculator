@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Rápida de ROI</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 16px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 0.875rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+        }
+        .column {
+            flex: 1;
+            padding: 10px;
+            min-width: 300px;
+        }
+        .panel {
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 16px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        h2 {
+            font-size: 1.125rem;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-group-alt {
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-group label, .form-group-alt label {
+            font-size: 0.875rem;
+            color: #444;
+        }
+        .form-group .code {
+            font-weight: bold;
+            font-size: 0.875rem;
+            width: 20px;
+        }
+        input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            width: 80px;
+        }
+        .fixed-value {
+            padding: 8px;
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            width: 80px;
+        }
+        .yellow-bg {
+            background-color: #fffaeb;
+        }
+        .divider {
+            margin: 12px 0;
+            border-top: 1px solid #e0e0e0;
+        }
+        .result-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            background-color: white;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .result-label {
+            font-size: 0.875rem;
+            color: #444;
+        }
+        .result-value {
+            font-size: 1rem;
+            text-align: right;
+        }
+        .highlight {
+            background-color: #eef5ff;
+            padding: 12px;
+        }
+        .green {
+            color: #16a34a;
+            font-weight: bold;
+        }
+        .blue {
+            color: #2563eb;
+            font-weight: bold;
+        }
+        .big-text {
+            font-size: 1.25rem;
+        }
+        .formulas {
+            margin-top: 16px;
+            font-size: 0.75rem;
+            color: #555;
+        }
+        ol {
+            margin-top: 4px;
+            padding-left: 24px;
+        }
+        .instructions {
+            background-color: #f5f5f5;
+            padding: 12px;
+            margin-top: 16px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #444;
+        }
+        .instructions ul {
+            margin-top: 4px;
+            padding-left: 24px;
+            margin-bottom: 0;
+        }
+        @media (max-width: 768px) {
+            .column {
+                flex: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora Rápida de ROI</h1>
+        <p class="subtitle">Introduce 4 valores en los campos amarillos y obtendrás, en segundos, el ahorro anual, el ROI y el payback.</p>
+        
+        <div class="row">
+            <!-- Panel de Inputs -->
+            <div class="column">
+                <div class="panel">
+                    <h2>Variables de entrada</h2>
+                    
+                    <div class="form-group">
+                        <div class="code">H</div>
+                        <label>Horas/mes por persona</label>
+                        <input type="number" id="horasMes" class="yellow-bg" value="20" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="code">N</div>
+                        <label>Nº de personas</label>
+                        <input type="number" id="numPersonas" class="yellow-bg" value="25" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="code">C</div>
+                        <label>Costo/hora equipo (€)</label>
+                        <input type="number" id="costoHora" class="yellow-bg" value="25" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="code">A</div>
+                        <label>% automatización del hub</label>
+                        <div class="fixed-value">80</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="code">ΔR</div>
+                        <label>% aumento revenue (opcional)</label>
+                        <input type="number" id="incrementoRevenue" class="yellow-bg" value="5" min="0">
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="form-group-alt">
+                        <label>Ingresos anuales (€)</label>
+                        <input type="number" id="ingresosActuales" value="500000" min="0">
+                    </div>
+                    
+                    <div class="form-group-alt">
+                        <label>Inversión proyecto (€)</label>
+                        <input type="number" id="inversionProyecto" value="40000" min="0">
+                    </div>
+                    
+                    <div class="form-group-alt">
+                        <label>Costes recurrentes anuales (€)</label>
+                        <input type="number" id="costesRecurrentes" value="12000" min="0">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Panel de Resultados -->
+            <div class="column">
+                <div class="panel">
+                    <h2>Resultados calculados</h2>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Ahorro costos anual:</div>
+                        <div class="result-value" id="ahorroAnual">-</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Upside por decisiones:</div>
+                        <div class="result-value" id="upside">-</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Beneficio anual total:</div>
+                        <div class="result-value green" id="beneficioTotal">-</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">Inversión total año 1:</div>
+                        <div class="result-value" id="costoTotal">-</div>
+                    </div>
+                    
+                    <div class="result-row highlight">
+                        <div class="result-label">ROI año 1:</div>
+                        <div class="result-value green big-text" id="roi">-</div>
+                    </div>
+                    
+                    <div class="result-row highlight">
+                        <div class="result-label">Payback:</div>
+                        <div class="result-value blue big-text" id="payback">-</div>
+                    </div>
+                    
+                    <div class="formulas">
+                        <p><strong>Fórmulas aplicadas:</strong></p>
+                        <ol>
+                            <li>Ahorro anual = H × N × C × 12 × 0.8</li>
+                            <li>Upside = Ingresos × ΔR / 100</li>
+                            <li>ROI = (Beneficio − Inversión total) / Inversión total</li>
+                            <li>Payback = Inversión / (Ahorro anual / 12)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <p><strong>Cómo usar esta calculadora:</strong></p>
+            <ul>
+                <li>Ajusta los valores en los campos amarillos según tu situación real.</li>
+                <li>Si no deseas considerar el upside por mejores decisiones, establece ΔR en 0%.</li>
+                <li>El 80% de automatización es un objetivo fijo del proyecto.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Función para formatear moneda
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('es-ES', { 
+                style: 'currency', 
+                currency: 'EUR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+        
+        // Función para calcular y actualizar resultados
+        function calcularResultados() {
+            // Obtener valores de entrada
+            const horasMes = parseFloat(document.getElementById('horasMes').value) || 0;
+            const numPersonas = parseFloat(document.getElementById('numPersonas').value) || 0;
+            const costoHora = parseFloat(document.getElementById('costoHora').value) || 0;
+            const incrementoRevenue = parseFloat(document.getElementById('incrementoRevenue').value) || 0;
+            const ingresosActuales = parseFloat(document.getElementById('ingresosActuales').value) || 0;
+            const inversionProyecto = parseFloat(document.getElementById('inversionProyecto').value) || 0;
+            const costesRecurrentes = parseFloat(document.getElementById('costesRecurrentes').value) || 0;
+            
+            // Valor fijo de automatización
+            const porcentajeAutomatizacion = 80;
+            
+            // Cálculos
+            const ahorroAnual = horasMes * numPersonas * costoHora * 12 * (porcentajeAutomatizacion / 100);
+            const upside = ingresosActuales * (incrementoRevenue / 100);
+            const beneficioTotal = ahorroAnual + upside;
+            const costoTotal = inversionProyecto + costesRecurrentes;
+            const roi = ((beneficioTotal - costoTotal) / costoTotal) * 100;
+            const payback = inversionProyecto / (ahorroAnual / 12);
+            
+            // Actualizar elementos en la página
+            document.getElementById('ahorroAnual').textContent = formatCurrency(ahorroAnual);
+            document.getElementById('upside').textContent = formatCurrency(upside);
+            document.getElementById('beneficioTotal').textContent = formatCurrency(beneficioTotal);
+            document.getElementById('costoTotal').textContent = formatCurrency(costoTotal);
+            document.getElementById('roi').textContent = (roi > 0 ? '+' : '') + roi.toFixed(0) + '%';
+            document.getElementById('payback').textContent = payback.toFixed(1) + ' meses';
+            
+            // Cambiar colores según resultados
+            document.getElementById('roi').className = roi >= 0 ? 'result-value green big-text' : 'result-value red big-text';
+        }
+        
+        // Añadir event listeners a todos los inputs
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', calcularResultados);
+        });
+        
+        // Calcular resultados iniciales
+        calcularResultados();
+    </script>
+</body>
+</html>
